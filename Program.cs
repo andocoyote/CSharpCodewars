@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
 using System.Text;
+using System.Reflection.Metadata;
 
 namespace Codewars
 {
@@ -16,6 +17,8 @@ namespace Codewars
             kata.ArrayDiffTest();
             kata.DuplicateCountTest();
             kata.PrinterErrorTest();
+            kata.AccumTest();
+            kata.ShortestWordTest();
         }
 
         public class Kata
@@ -143,8 +146,78 @@ namespace Codewars
                 int errors = s.Where(c => c < 'a' || c > 'm').Count();
 
                 string ratio = errors.ToString() + '/' + s.Length.ToString();
-
                 return ratio;
+            }
+
+            // This time no story, no theory.The examples below show you how to write function accum:
+            // Examples:
+            //  accum("abcd") -> "A-Bb-Ccc-Dddd"
+            //  accum("RqaEzty") -> "R-Qq-Aaa-Eeee-Zzzzz-Tttttt-Yyyyyyy"
+            //  accum("cwAt") -> "C-Ww-Aaa-Tttt"
+            // The parameter of accum is a string which includes only letters from a..z and A..Z.
+            public void AccumTest()
+            {
+                ClassicAssert.AreEqual(Accumul.Accum("ZpglnRxqenU"), "Z-Pp-Ggg-Llll-Nnnnn-Rrrrrr-Xxxxxxx-Qqqqqqqq-Eeeeeeeee-Nnnnnnnnnn-Uuuuuuuuuuu");
+                ClassicAssert.AreEqual(Accumul.Accum("NyffsGeyylB"), "N-Yy-Fff-Ffff-Sssss-Gggggg-Eeeeeee-Yyyyyyyy-Yyyyyyyyy-Llllllllll-Bbbbbbbbbbb");
+                ClassicAssert.AreEqual(Accumul.Accum("MjtkuBovqrU"), "M-Jj-Ttt-Kkkk-Uuuuu-Bbbbbb-Ooooooo-Vvvvvvvv-Qqqqqqqqq-Rrrrrrrrrr-Uuuuuuuuuuu");
+                ClassicAssert.AreEqual(Accumul.Accum("EvidjUnokmM"), "E-Vv-Iii-Dddd-Jjjjj-Uuuuuu-Nnnnnnn-Oooooooo-Kkkkkkkkk-Mmmmmmmmmm-Mmmmmmmmmmm");
+                ClassicAssert.AreEqual(Accumul.Accum("HbideVbxncC"), "H-Bb-Iii-Dddd-Eeeee-Vvvvvv-Bbbbbbb-Xxxxxxxx-Nnnnnnnnn-Cccccccccc-Ccccccccccc");
+            }
+
+            public class Accumul
+            {
+                public static string Accum(string s)
+                {
+                    StringBuilder stringBuilder = new StringBuilder();
+
+                    for (int i = 0; i < s.Length; i++)
+                    {
+                        stringBuilder.Append(char.ToUpper(s[i]));
+                        stringBuilder.Append(char.ToLower(s[i]), i);
+
+                        if (i < s.Length - 1)
+                        {
+                            stringBuilder.Append('-');
+                        }
+                    }
+
+                    Console.WriteLine($"{s} -> {stringBuilder.ToString()}");
+
+                    return stringBuilder.ToString();
+                }
+            }
+
+            // Given a string of words, return the length of the shortest word(s).
+            public void ShortestWordTest()
+            {
+                ClassicAssert.AreEqual(3, Kata.FindShortestWord("bitcoin take over the world maybe who knows perhaps"));
+                ClassicAssert.AreEqual(3, Kata.FindShortestWord("turns out random test cases are easier than writing out basic ones"));
+                ClassicAssert.AreEqual(2, Kata.FindShortestWord("Let's travel abroad shall we"));
+            }
+
+            public static int FindShortestWord(string s)
+            {
+                int shortestLength = s.Length;
+
+                string[] words = s.Split(' ');
+
+                foreach (string word in words)
+                {
+                    if (word.Length < shortestLength)
+                    {
+                        shortestLength = word.Length;
+                    }
+                }
+
+                Console.WriteLine($"Shortest word has {shortestLength} chars.");
+
+                return shortestLength;
+
+                /* Alternatively:
+
+                    return s.Split(' ').Min(x => x.Length);
+
+                */
             }
         }
     }
